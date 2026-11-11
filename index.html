@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <!-- 静态元数据的默认值取 zh，与 <html lang="zh-CN"> 及 og:locale 一致。
+         运行时 i18n.jsx 会按当前语言覆盖 document.title 与 meta[name=description]；
+         但爬虫与社交平台的分享预览不执行 JS，只读这里，故必须与品牌名同步。 -->
+    <meta
+      name="description"
+      content="Banner Atlas：Ingress 拼图任务与官方任务档案，可按拼图类型、规模、作者和在线状态浏览。"
+    />
+    <meta name="theme-color" content="#05090b" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Banner Atlas" />
+    <meta property="og:title" content="Banner Atlas — Ingress 拼图任务档案" />
+    <meta
+      property="og:description"
+      content="Banner Atlas：Ingress 拼图任务与官方任务档案，可按拼图类型、规模、作者和在线状态浏览。"
+    />
+    <meta property="og:image" content="og-card.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Banner Atlas 深色卡片：金色六边形徽章与 Ingress 拼图任务档案副标题"
+    />
+    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:locale:alternate" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Banner Atlas — Ingress 拼图任务档案" />
+    <meta
+      name="twitter:description"
+      content="Banner Atlas：Ingress 拼图任务与官方任务档案，可按拼图类型、规模、作者和在线状态浏览。"
+    />
+    <meta name="twitter:image" content="og-card.png" />
+    <link rel="dns-prefetch" href="https://api.bannergress.com" />
+    <link rel="preconnect" href="https://api.bannergress.com" crossorigin />
+    <!-- public 资源用根绝对路径引用，由 Vite 按 base 补前缀，dev 与 build 都得到
+         /specops-gold.png。不要写成 %BASE_URL%xxx：它在 dev server 下会被
+         重复拼成 //specops-gold.png。 -->
+    <link rel="icon" type="image/png" href="/specops-gold.png" />
+    <title>Banner Atlas — Ingress 拼图任务档案</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

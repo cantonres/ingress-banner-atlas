@@ -1,0 +1,58 @@
+# Dependencies, builds and caches
+node_modules/
+dist/
+coverage/
+.vite/
+*.tsbuildinfo
+
+# Data-collection workspace (tools/ writes here; never commit raw captures)
+/out/
+
+# Local environment; examples must contain placeholders only
+.env
+.env.*
+!.env.example
+.dev.vars
+.dev.vars.*
+.npmrc
+
+# Editor and operating-system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Logs, local captures and temporary files
+*.log
+*.pid
+/.tmp/
+/current-page.png
+/screenshots/
+/backup/
+/backups/
+*.bak
+*.backup
+*~
+
+# Credentials and session exports
+.secrets/
+secrets/
+auth.json
+credentials.json
+token.json
+tokens.json
+cookies.json
+cookies.txt
+session.json
+session.jsonl
+sessions/
+session-exports/
+
+# Private keys and certificate bundles
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa
+id_ed25519

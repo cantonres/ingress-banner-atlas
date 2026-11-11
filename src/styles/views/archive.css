@@ -1,0 +1,180 @@
+@layer views {
+  .archive-tools { display: flex; align-items: center; gap: 12px; }
+  .archive-tools strong, .surface-heading__metric { color: var(--color-text-secondary); font-family: var(--font-mono); font-size: 12px; font-weight: 500; }
+  .archive-screen { display: flex; flex-direction: column; }
+  .archive-screen > .intel-surface-heading, .archive-screen > .archive-layout { width: min(100%, 1320px); margin-right: auto; margin-left: auto; }
+  .archive-screen > header { flex: 0 0 auto; }
+  .archive-layout { display: grid; flex: 1; min-height: 0; grid-template-columns: minmax(0, 1fr) minmax(360px, 400px); gap: 16px; padding-top: 12px; }
+  .archive-layout.detail-closed { grid-template-columns: minmax(0, 1fr) 0; gap: 0; }
+
+  .event-table { display: grid; height: 100%; min-height: 0; grid-template-rows: 44px minmax(0, 1fr) auto; overflow: hidden; border: 1px solid var(--color-divider); border-radius: var(--radius-md); background: var(--color-surface); }
+  /* 列序：序号 | 图片 | 拼图名称 | 城市/国家 | 任务数 | 拼图完成人数 | 平均评分 | 状态。
+     ⚠️ 「拼图操作」曾经作为第 4 列加在这里，2026-10-02 又**撤掉了** —— 加了它之后
+     城市/国家那一列被挤到 100px，「玩家自制拼图 / MD 拼图」徽章直接被裁没（见下方 small 的 flex-wrap）。
+     操作标签现在只在详情抽屉里显示（EventDetail.jsx）。
+     城市列从原来的 132px 调到 136px：内容区 132−24 = 108px 装不下「📍中国大陆 · APAC」（实测 110px），
+     差这 4px 会把 APAC 的尾巴裁掉。其余列宽与 2026-09-27 的原始版本一致。
+     「序号」2026-10-17 加在最前面：表格按完成人数/评分排序后，行号是「第几名」的唯一参照
+     （筛选结果一变行次就变，滚动后更是无从数起）。44px 宽，只放行号，见下方 .event-row__seq。 */
+  .event-table__header, .event-row { display: grid; grid-template-columns: 44px 72px minmax(180px, 1.4fr) 136px 76px 104px 88px 100px; align-items: center; column-gap: 8px; }
+  .event-table__header { color: var(--color-text-muted); background: var(--color-surface-raised); font-size: 12px; font-weight: 500; }
+  .event-table__header span { display: flex; align-items: center; gap: 4px; padding: 0 12px; }
+  /* 序号列：辅助信息，弱化处理，不跟标题/数值列抢注意力。
+     内边距从 12px 收到 6px、字号收到 12px：四位行号（「1886」）实测 28.8px，
+     44 − 12 = 32px 刚好装下，列总宽只比原来多 52px（44 + 一个列间距）。 */
+  .event-table__header > span:first-child { justify-content: center; padding: 0 6px; }
+  .event-row > .event-row__seq { padding: 0 6px; color: var(--color-text-muted); font-family: var(--font-mono); font-size: 12px; text-align: center; }
+  .event-table__sort { display: inline-flex; align-items: center; gap: 4px; padding: 0; border: 0; color: inherit; background: transparent; cursor: pointer; font: inherit; }
+  .event-table__sort:hover { color: var(--color-text); }
+  .event-table__sort.is-active { color: var(--color-cyan); }
+  .event-table__sort svg { opacity: 0; transition: opacity 120ms ease, transform 120ms ease; }
+  .event-table__sort:hover svg, .event-table__sort.is-active svg { opacity: 1; }
+  /* 升序时箭头朝上：默认（降序）是 ChevronDown，转 180° 就是升序。 */
+  .event-table__sort.is-asc svg { transform: rotate(180deg); }
+  .event-table__body { min-height: 0; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--color-divider) transparent; }
+
+  .event-row { position: relative; width: 100%; min-height: 64px; padding: 0; border: 0; border-bottom: 1px solid var(--color-divider); color: var(--color-text-secondary); background: transparent; cursor: pointer; text-align: left; content-visibility: auto; contain-intrinsic-size: 100% 64px; }
+  .event-row::before { position: absolute; inset: 0 auto 0 0; width: 3px; content: ""; background: transparent; }
+  .event-row:hover { background: var(--color-surface-hover); }
+  .event-row.is-selected { background: rgb(66 214 223 / 9%); }
+  .event-row.is-selected::before { background: var(--color-amber); }
+  .event-row > span { min-width: 0; padding: 0 12px; font-size: 13px; }
+  .event-row__title { overflow: hidden; color: var(--color-text); font-size: 14px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+  .event-row.is-selected .event-row__title { color: var(--color-cyan); }
+  .event-row__place { display: flex; flex-direction: column; gap: 2px; }
+  .event-row__place strong { overflow: hidden; color: var(--color-text-secondary); font-size: 13px; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
+  /* 换行是这里的**功能**，不是排版口味：这一格内容区只有 132−24 = 108px，
+     而「📍中国大陆 · APAC」约 101px + 「玩家自制拼图」徽章约 66px 放不下。
+     原来是不换行的 flex，徽章被 overflow: hidden 静默裁掉 —— 用户报的「标签看不到」就是这个。
+     现在拆成两个 flex item：地理信息（nowrap，一个整体）+ 类型徽章（放不下就整体落到第二行），
+     于是稳定两行、行高仍是 min-height 的 64px。
+     ⚠️ 别改回「地理信息散在容器里」：JSX 的 `{country}{region && \` · ${region}\`}` 是两个相邻
+     文本节点，在 flex 容器里会各自成为匿名 item，窄列（112/124px）下会折成三行、行高涨到 83px。
+     ⚠️ 也别给 .event-row__place-geo 加 min-width: 0 —— flex 会压缩它而不是让徽章换行，徽章又被挤掉。 */
+  .event-row__place small { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 4px; overflow: hidden; color: var(--color-text-muted); font-size: var(--text-meta); line-height: 1.55; }
+  .event-row__place-geo { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+  .event-row__place small .banner-badge { margin-left: 0; }
+  .event-row__count { color: var(--color-text); font-family: var(--font-mono); }
+  .event-row__completions { display: flex; align-items: center; gap: 5px; color: var(--color-text); font-family: var(--font-mono); font-size: 12px; }
+  .event-row__completions svg { flex: 0 0 auto; color: var(--color-cyan); }
+  .event-row__rating { display: flex; align-items: center; gap: 5px; color: var(--color-amber); font-family: var(--font-mono); font-size: 12px; }
+  .event-row__image { width: 56px; height: 42px; margin-left: 12px; padding: 0 !important; border-radius: 5px; }
+  .event-row__image .mission-image__loading { font-size: 0; }
+  .event-row__image .mission-image__loading::after { width: 24px; height: 3px; border-radius: 999px; content: ""; background: var(--color-divider); }
+
+  /* 抽屉打开时表格会明显变窄，按可用宽度逐档收列。
+     行可用宽度 W(v) = min(v−48, 1320) − 抽屉 − 16(间距) − 2(边框) − 10(竖滚动条)。
+     抽屉在 >1180px 时被 grid 的 minmax(360px,400px) 撑到 400px，≤1180px 固定 360px，
+     所以 1181~1339px **反而比 1180px 更紧**。各档下界由「W(v) ≥ 模板宽」解出：
+       8 列 856px → 抽屉打开 v ≥ 1332；7 列 648px → v ≥ 1148；6 列 530px → v ≥ 970；
+       5 列 424px → v ≥ 864；4 列 316px → v ≥ 752（与 ≤760 卡片布局取交，得 761）。
+     抽屉关闭时行宽是 v−60：8 列 856px → v ≥ 916；8 列窄版 740px → v ≥ 800；7 列 644px → v ≥ 708。
+     ⚠️ 2026-10-17 加「序号」列后每档模板都 +52px（44px 列 + 一个列间距），
+     各档下界因此比初版整体上移约 52px；「序号」是行号列，窄档也不撤
+     （≤760 卡片布局除外）—— 行号在任何宽度下都是「第几名」的唯一参照。
+     每档都必须带 min-width: 761px —— 否则会盖掉 ≤760 的卡片式布局
+     （卡片布局靠 .event-row 的 grid-template-rows/columns 定位，被覆盖后会整行错位）。
+     ⚠️ .event-table 是 overflow: hidden：列放不下是**静默裁掉右边、不出滚动条**，所以每档都要算准。
+     ⚠️「任务数」列别低于 64px：表头是 3 个汉字（约 36px）加左右各 12px 内边距，56px 下表头会竖排成三行。
+     ⚠️ 城市列别低于 136px（内容区 112px）：地理信息实测 110px，再窄就会裁掉大区后缀。 */
+
+  /* 抽屉宽度：≤1180px 固定 360px（>1180px 交给 grid 的 minmax(360px, 400px) 撑到 400px）。 */
+  @media (max-width: 1180px) {
+    .archive-layout:not(.detail-closed) { grid-template-columns: minmax(0, 1fr) 360px; }
+  }
+
+  /* 7 列 648px（隐「状态」）：覆盖抽屉 400px 与 360px 两种情形，故上界取到 1339
+     （1332px 起基础 8 列 856px 放得下，留 8px 余量）。城市列保住 136px，标题列退到 128px。 */
+  @media (min-width: 1148px) and (max-width: 1339px) {
+    .archive-layout:not(.detail-closed) .event-table__header,
+    .archive-layout:not(.detail-closed) .event-row { grid-template-columns: 44px 64px minmax(128px, 1.4fr) 136px 64px 88px 76px; }
+    .archive-layout:not(.detail-closed) .event-table__header span:nth-child(8),
+    .archive-layout:not(.detail-closed) .event-row > .status { display: none; }
+  }
+
+  /* 6 列 530px（再隐「平均评分」）。城市列只剩 108px，容不下「国家 · 大区」，
+     按「放不下就收掉」的既有做法只留国家名（大区在筛选器和详情抽屉里都有）。 */
+  @media (min-width: 970px) and (max-width: 1147px) {
+    .archive-layout:not(.detail-closed) .event-table__header,
+    .archive-layout:not(.detail-closed) .event-row { grid-template-columns: 44px 64px minmax(126px, 1.3fr) 108px 64px 84px; }
+    .archive-layout:not(.detail-closed) .event-table__header span:nth-child(7),
+    .archive-layout:not(.detail-closed) .event-table__header span:nth-child(8),
+    .archive-layout:not(.detail-closed) .event-row > .event-row__rating,
+    .archive-layout:not(.detail-closed) .event-row > .status,
+    .archive-layout:not(.detail-closed) .event-row__place-region { display: none; }
+  }
+
+  /* 5 列 424px（再隐「拼图完成人数」）。城市列 104px，同上只留国家名。 */
+  @media (min-width: 864px) and (max-width: 969px) {
+    .archive-layout:not(.detail-closed) .event-table__header,
+    .archive-layout:not(.detail-closed) .event-row { grid-template-columns: 44px 64px minmax(116px, 1.3fr) 104px 64px; }
+    .archive-layout:not(.detail-closed) .event-table__header span:nth-child(6),
+    .archive-layout:not(.detail-closed) .event-table__header span:nth-child(7),
+    .archive-layout:not(.detail-closed) .event-table__header span:nth-child(8),
+    .archive-layout:not(.detail-closed) .event-row > .event-row__completions,
+    .archive-layout:not(.detail-closed) .event-row > .event-row__rating,
+    .archive-layout:not(.detail-closed) .event-row > .status,
+    .archive-layout:not(.detail-closed) .event-row__place-region { display: none; }
+  }
+
+  /* 4 列 316px（再隐「城市 / 国家或地区」）。761~863px 下表格只剩 325~427px，
+     再留城市列就必然裁切；这几档里详情抽屉是唯一能看到完整信息的地方。 */
+  @media (min-width: 761px) and (max-width: 863px) {
+    .archive-layout:not(.detail-closed) .event-table__header,
+    .archive-layout:not(.detail-closed) .event-row { grid-template-columns: 44px 64px minmax(120px, 1fr) 64px; }
+    .archive-layout:not(.detail-closed) .event-table__header span:nth-child(4),
+    .archive-layout:not(.detail-closed) .event-table__header span:nth-child(6),
+    .archive-layout:not(.detail-closed) .event-table__header span:nth-child(7),
+    .archive-layout:not(.detail-closed) .event-table__header span:nth-child(8),
+    .archive-layout:not(.detail-closed) .event-row > .event-row__place,
+    .archive-layout:not(.detail-closed) .event-row > .event-row__completions,
+    .archive-layout:not(.detail-closed) .event-row > .event-row__rating,
+    .archive-layout:not(.detail-closed) .event-row > .status { display: none; }
+  }
+
+  /* 抽屉关闭：表格能拿到整个容器，但行宽只有 v−60（页边距 48 + 边框 2 + 滚动条 10）。
+     基础 8 列 856px 要 v ≥ 916（含 8px 余量取 924），所以 761~923px 仍得收列。
+     761~803px 用 7 列 644px（隐「状态」，与抽屉打开的同宽表格同一取舍）；
+     804~923px 用 8 列窄版 740px（图片列 60px、标题列 128px），序号列此时仍放得下。 */
+  @media (min-width: 761px) and (max-width: 803px) {
+    .archive-layout.detail-closed .event-table__header,
+    .archive-layout.detail-closed .event-row { grid-template-columns: 44px 60px minmax(128px, 1.4fr) 136px 64px 88px 76px; }
+    .archive-layout.detail-closed .event-table__header span:nth-child(8),
+    .archive-layout.detail-closed .event-row > .status { display: none; }
+  }
+
+  @media (min-width: 804px) and (max-width: 923px) {
+    .archive-layout.detail-closed .event-table__header,
+    .archive-layout.detail-closed .event-row { grid-template-columns: 44px 60px minmax(128px, 1.4fr) 136px 64px 88px 76px 88px; }
+  }
+
+  @media (max-width: 760px) {
+    .archive-layout { display: block; padding-top: 12px; }
+    .archive-layout > .primary-surface { height: 100%; overflow: auto; scrollbar-width: thin; }
+    .event-table { display: block; height: auto; overflow: visible; border-radius: var(--radius-md); }
+    .event-table__header { display: none; }
+    .event-table__body { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; padding: 8px; overflow: visible; }
+    .event-row { display: grid; box-sizing: border-box; width: auto; max-width: 100%; min-width: 0; min-height: 118px; grid-template-columns: 72px minmax(0, 1fr) auto; grid-template-rows: auto auto auto auto; gap: 3px 12px; padding: 12px; overflow: hidden; border: 1px solid var(--color-divider); border-radius: var(--radius-sm); background: rgb(22 33 39 / 65%); content-visibility: visible; contain-intrinsic-size: auto; }
+    .event-row::before { width: 0; }
+    .event-row.is-selected { border-color: var(--color-cyan); background: rgb(66 214 223 / 9%); }
+    .event-row > span { padding: 0; }
+    .event-row__image { width: 72px; height: 62px; grid-column: 1; grid-row: 1 / 6; align-self: center; margin-left: 0; }
+    .event-row__title { grid-column: 2; grid-row: 1; align-self: end; font-size: 15px; white-space: normal; }
+    .event-row__place { grid-column: 2; grid-row: 2; flex-wrap: wrap; align-items: baseline; gap: 6px; }
+    /* 卡片里「城市」和「国家 · 大区 + 类型徽章」各占一行：并排时这一格只剩 58px（360px 视口），
+       比徽章本身（66px）还窄，徽章必被裁。独占一行后拿到整个列宽，徽章才放得下。
+       窄屏（320px）下地理信息本身也放不下，所以放开 nowrap 让它折行、城市名允许压缩出省略号。 */
+    .event-row__place strong { min-width: 0; }
+    .event-row__place small { flex: 1 1 100%; }
+    .event-row__place-geo { white-space: normal; }
+    .event-row__completions { grid-column: 2; grid-row: 3; color: var(--color-text-secondary); }
+    .event-row__count { grid-column: 2; grid-row: 4; align-self: start; color: var(--color-text-secondary); }
+    .event-row__completions::after, .event-row__count::after { content: " " attr(data-label); color: var(--color-text-muted); font-family: var(--font-body); font-size: 12px; }
+    .event-row__rating { display: none; }
+    /* 卡片布局没有表头行，行号无处对照（也无处安放），直接隐去。
+        排序位次在桌面表格里看，卡片模式靠 data-label 标注的数值即可。 */
+    .event-row__seq { display: none; }
+    .event-row > .status { grid-column: 3; grid-row: 1 / 5; align-self: center; }
+    .load-more { border-top: 1px solid var(--color-divider); }
+  }
+}

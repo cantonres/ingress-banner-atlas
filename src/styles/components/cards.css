@@ -1,0 +1,40 @@
+@layer components {
+  .surface, .card, .primary-surface, .event-table, .detail-panel, .data-panel { background: var(--color-surface); }
+  .surface { border: 1px solid var(--color-divider); border-radius: var(--radius-md); }
+  .card { border-radius: var(--radius-md); }
+
+  .primary-surface { min-width: 0; min-height: 0; transition: opacity 120ms ease; }
+  .primary-surface.is-pending { opacity: .55; }
+  .detail-art { position: relative; width: 100%; aspect-ratio: 1.65 / 1; margin: 20px 0; overflow: hidden; border-radius: var(--radius-sm); background: var(--color-surface-raised); }
+  .detail-art .mission-image { width: 100%; height: 100%; }
+  .detail-art__axis, .detail-art__coordinate { display: none; }
+  .detail-art__open { position: absolute; right: 8px; bottom: 8px; z-index: 2; padding: 5px 8px; border-radius: 999px; color: var(--color-cyan); background: rgb(11 16 20 / 80%); font-size: 12px; text-decoration: none; }
+  .detail-art__open:hover { color: var(--color-page); background: var(--color-cyan); }
+  .event-facts { display: grid; grid-template-columns: 1fr 1fr; margin: 0; border-top: 1px solid var(--color-divider); }
+  .event-facts > div { display: flex; min-width: 0; min-height: 42px; align-items: center; justify-content: space-between; gap: 12px; padding: 7px 0; border-bottom: 1px solid var(--color-divider); }
+  .event-facts > div:nth-child(odd) { margin-right: 16px; }
+  .event-facts .event-facts__wide { grid-column: 1 / -1; margin-right: 0; }
+  .event-facts dt { color: var(--color-text-muted); font-size: var(--text-meta); }
+  .event-facts dd { min-width: 0; margin: 0; overflow: hidden; color: var(--color-text); font-family: var(--font-mono); font-size: 12px; text-align: right; text-overflow: ellipsis; white-space: nowrap; }
+  /* 作者名按阵营着色（色板见 styles/views/data.css 的 .faction-text--*）：名字内部不折行，折行只发生在作者之间。 */
+  .event-facts__authors .author-tag { white-space: nowrap; }
+  /* 站内钻取链接：虚线底边 = 「就地换筛选」。面板里的外链（右上角图标按钮、任务行）没有底边，
+     两者刻意用不同语言 —— 点下去一个是换结果集，一个是开新标签，不该长得一样。 */
+  .filter-link { display: inline-flex; align-items: baseline; gap: 5px; border: 0; border-bottom: 1px dashed var(--color-divider); background: transparent; cursor: pointer; }
+  .filter-link:hover, .filter-link:focus-visible { border-bottom-style: solid; border-bottom-color: var(--color-cyan); }
+  .filter-link__count { color: var(--color-text-muted); font-family: var(--font-mono); font-size: 11px; }
+  .filter-link:hover .filter-link__count, .filter-link:focus-visible .filter-link__count { color: var(--color-cyan); }
+  /* 已生效的筛选条件：底边常态即青色，表示「再点也不会变」，而不是让链接看起来是坏的。 */
+  .filter-link.is-active { border-bottom-color: var(--color-cyan); }
+  .filter-link.is-active .filter-link__count { color: var(--color-cyan); }
+  /* 药丸徽章自带边框，再叠一条虚线底边会变成双重边框，所以改用底色反馈。 */
+  .filter-link--badge { border-bottom-color: transparent; }
+  .filter-link--badge:hover, .filter-link--badge:focus-visible { border-bottom-color: transparent; }
+  .filter-link--badge:hover .banner-badge, .filter-link--badge:focus-visible .banner-badge { background: rgb(66 214 223 / 16%); }
+  .filter-link--badge.is-active { border-bottom-color: transparent; }
+  .filter-link--badge.is-active .banner-badge { background: rgb(66 214 223 / 16%); }
+  .fact-rating { display: flex; align-items: center; gap: 4px; color: var(--color-amber) !important; }
+  .detail-description { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--color-divider); }
+  .detail-description h3 { margin: 0 0 6px; color: var(--color-text-muted); font-size: var(--text-meta); font-weight: 500; }
+  .detail-description p { margin: 0; color: var(--color-text-secondary); font-size: 13px; line-height: 1.55; overflow-wrap: anywhere; white-space: pre-wrap; }
+}

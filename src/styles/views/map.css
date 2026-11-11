@@ -1,0 +1,97 @@
+@layer views {
+  .mission-map, .mission-map__canvas, .maplibregl-map { width: 100%; height: 100%; }
+  .mission-map { position: absolute; inset: 0; background: #15262c; }
+  .mission-map__canvas { position: absolute; inset: 0; z-index: 1; background: #15262c; font-family: var(--font-mono); }
+  .maplibregl-ctrl-bottom-right { top: auto; right: 20px; bottom: 12px; }
+  .maplibregl-ctrl-attrib { padding: 2px 5px !important; color: var(--color-text-muted) !important; background: rgb(17 25 30 / 82%) !important; font-size: 10px !important; line-height: 1.2 !important; }
+  .maplibregl-ctrl-attrib a { color: var(--color-cyan) !important; }
+  .maplibregl-ctrl-attrib-button { filter: invert(1) opacity(.55); }
+  /* The vendor stylesheet is unlayered, so its white popup background needs an explicit override. */
+  .maplibregl-popup-content { padding: 10px 12px; border-radius: var(--radius-sm); color: var(--color-text); background: var(--color-surface) !important; box-shadow: var(--shadow-panel); font-size: 12px; }
+  .mission-map-popup__body { display: flex; flex-direction: column; gap: 3px; max-width: min(280px, calc(100vw - 48px)); overflow-wrap: anywhere; }
+  .maplibregl-popup:is(.maplibregl-popup-anchor-bottom, .maplibregl-popup-anchor-bottom-left, .maplibregl-popup-anchor-bottom-right) .maplibregl-popup-tip { border-top-color: var(--color-surface) !important; }
+  .maplibregl-popup:is(.maplibregl-popup-anchor-top, .maplibregl-popup-anchor-top-left, .maplibregl-popup-anchor-top-right) .maplibregl-popup-tip { border-bottom-color: var(--color-surface) !important; }
+  .maplibregl-popup-anchor-left .maplibregl-popup-tip { border-right-color: var(--color-surface) !important; }
+  .maplibregl-popup-anchor-right .maplibregl-popup-tip { border-left-color: var(--color-surface) !important; }
+  .maplibregl-popup-content strong { color: var(--color-text); font-family: var(--font-heading); font-size: 16px; }
+  .maplibregl-popup-content span { color: var(--color-text-secondary); }
+
+  .map-control-dock { position: absolute; right: 20px; bottom: 76px; z-index: 800; display: grid; width: 44px; overflow: hidden; border-radius: var(--radius-sm); background: var(--color-surface); box-shadow: var(--shadow-panel); }
+  .intel-workspace--map:has(> .detail-panel.is-open) .map-control-dock { right: 432px; }
+  .map-control-dock button { display: grid; width: 44px; height: 44px; place-items: center; padding: 0; border: 0; border-bottom: 1px solid var(--color-divider); color: var(--color-text-secondary); background: transparent; cursor: pointer; }
+  .map-control-dock button:last-child { border-bottom: 0; }
+  .map-control-dock button:hover { color: var(--color-cyan); background: var(--color-surface-hover); }
+
+  .selection-strip { position: absolute; top: 20px; left: 20px; z-index: 500; display: flex; min-height: 42px; align-items: center; gap: 10px; max-width: calc(100% - 460px); padding: 0 14px; border-radius: var(--radius-sm); color: var(--color-text-secondary); background: rgb(17 25 30 / 92%); box-shadow: var(--shadow-panel); }
+  .selection-strip i { width: 8px; height: 8px; flex: 0 0 auto; border-radius: 50%; background: var(--color-cyan); }
+  .selection-strip i.is-mission-day { background: var(--color-amber); }
+  .selection-strip strong { overflow: hidden; color: var(--color-text); font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+  .selection-strip b { color: var(--color-text-secondary); font-weight: 500; }
+
+  .map-activity-button { position: absolute; bottom: 20px; left: 20px; z-index: 500; width: 44px; height: 44px; color: var(--color-text-secondary); background: rgb(17 25 30 / 94%); box-shadow: var(--shadow-panel); }
+
+  .event-feed { position: absolute; bottom: 20px; left: 20px; z-index: 500; width: min(460px, calc(100vw - 480px)); min-width: 340px; overflow: hidden; border-radius: var(--radius-md); background: rgb(17 25 30 / 94%); box-shadow: var(--shadow-panel); opacity: 0; visibility: hidden; transform: translateY(18px); transition: opacity 180ms ease, transform 180ms ease, visibility 0s linear 180ms; }
+  .event-feed.is-open { opacity: 1; visibility: visible; transform: translateY(0); transition-delay: 0s; }
+  .event-feed > header { display: grid; height: 35px; grid-template-columns: minmax(108px, 1fr) auto 35px; align-items: stretch; border-bottom: 1px solid var(--color-divider); font-size: 11px; }
+  .event-feed > header > span { display: flex; align-items: center; gap: 6px; padding: 0 12px; color: var(--color-text-secondary); font-weight: 500; }
+  .event-feed nav { display: flex; }
+  .event-feed nav button { min-width: 48px; padding: 0 8px; border: 0; border-left: 1px solid var(--color-divider); color: var(--color-text-muted); background: transparent; cursor: pointer; }
+  .event-feed nav button:hover { color: var(--color-text); background: var(--color-surface-hover); }
+  .event-feed nav button.is-active { color: var(--color-amber); box-shadow: inset 0 -2px 0 var(--color-amber); }
+  .event-feed__close { display: grid; width: 35px; height: 35px; place-items: center; padding: 0; border: 0; border-left: 1px solid var(--color-divider); color: var(--color-text-muted); background: transparent; cursor: pointer; }
+  .event-feed__close:hover, .event-feed__close:focus-visible { color: var(--color-cyan); background: var(--color-surface-hover); }
+  .event-feed__rows { display: grid; }
+  .event-feed__rows > button { display: grid; min-height: 35px; grid-template-columns: 12px minmax(96px, 1fr) 58px 56px 62px; align-items: center; gap: 6px; padding: 0 10px; border: 0; border-bottom: 1px solid var(--color-divider); color: var(--color-text-secondary); background: transparent; cursor: pointer; font-size: 11px; text-align: left; }
+  .event-feed__rows > button:hover { background: var(--color-surface-hover); }
+  .event-feed__rows i { width: 7px; height: 7px; border-radius: 50%; background: var(--color-cyan); }
+  .event-feed__rows i.is-mission-day { background: var(--color-amber); }
+  .event-feed__completions { display: flex; align-items: center; gap: 3px; color: var(--color-text); font-family: var(--font-mono); }
+  .event-feed__completions svg { flex: 0 0 auto; color: var(--color-cyan); }
+  .event-feed__rows strong { overflow: hidden; color: var(--color-text); font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
+  .event-feed__archive { display: flex; width: 100%; min-height: 42px; align-items: center; justify-content: center; gap: 8px; border: 0; color: var(--color-cyan); background: transparent; cursor: pointer; }
+  .event-feed__archive:hover { background: var(--color-surface-hover); }
+
+  @media (max-width: 1100px) {
+    .intel-workspace--map:has(> .detail-panel.is-open) .map-control-dock { right: 332px; }
+    .selection-strip { max-width: calc(100% - 360px); }
+    .event-feed { width: 400px; min-width: 340px; }
+    .event-feed__rows > button { grid-template-columns: 10px minmax(86px, 1fr) 54px 52px 58px; gap: 5px; }
+  }
+  @media (max-width: 760px) {
+    .intel-workspace--map:has(> .detail-panel.is-open) .map-control-dock { right: 16px; }
+    .selection-strip { top: 12px; right: 12px; left: 12px; max-width: none; min-width: 0; height: auto; min-height: 44px; gap: 8px; padding: 8px 12px; }
+    .selection-strip strong { max-width: 58%; }
+    .selection-strip span, .selection-strip b, .selection-strip .banner-badge { display: none; }
+    .event-feed { right: 12px; bottom: max(34px, env(safe-area-inset-bottom)); left: 12px; width: auto; max-height: min(38dvh, 320px); min-width: 0; display: grid; grid-template-rows: 35px minmax(0, 1fr) 42px; border: 1px solid var(--color-divider); }
+    .map-activity-button { bottom: max(12px, env(safe-area-inset-bottom)); left: 12px; }
+    .event-feed > header { grid-template-columns: 104px minmax(0, 1fr) 35px; }
+    .event-feed > header > span { padding: 0 10px; }
+    .event-feed nav { display: grid; grid-template-columns: repeat(4, 1fr); }
+    .event-feed nav button { min-width: 0; padding: 0 5px; }
+    .event-feed__rows { overflow: auto; }
+    .event-feed__rows > button { min-height: 54px; grid-template-columns: 12px minmax(0, 1fr) 58px; gap: 6px; padding: 0 10px; }
+    .event-feed__rows > button > span:nth-of-type(1), .event-feed__rows > button > span:nth-of-type(2) { display: none; }
+    .event-feed__rows .status { grid-column: 3; grid-row: 1; justify-self: end; }
+    .maplibregl-ctrl-bottom-right { top: auto; right: 8px; bottom: max(8px, env(safe-area-inset-bottom)); }
+    .map-control-dock { top: 68px; right: 12px; bottom: auto; }
+  }
+
+  @media (max-width: 430px) {
+    .selection-strip { top: 10px; right: 10px; left: 10px; min-height: 40px; padding: 6px 10px; font-size: 12px; }
+    .selection-strip strong { max-width: 66%; }
+    .event-feed { right: 8px; bottom: max(34px, env(safe-area-inset-bottom)); left: 8px; max-height: 206px; grid-template-rows: 68px minmax(0, 1fr) 38px; border-radius: var(--radius-sm); }
+    .event-feed > header { height: 68px; grid-template-columns: minmax(0, 1fr) 36px; grid-template-rows: 32px 36px; }
+    .event-feed > header > span { grid-column: 1; grid-row: 1; padding: 0 10px; }
+    .event-feed nav { grid-column: 1 / -1; grid-row: 2; border-top: 1px solid var(--color-divider); }
+    .event-feed nav button { padding: 0 4px; border-left: 1px solid var(--color-divider); font-size: 10px; }
+    .event-feed nav button:first-child { border-left: 0; }
+    .event-feed__close { grid-column: 2; grid-row: 1; width: 36px; height: 32px; }
+    .event-feed__rows { overflow: hidden; }
+    .event-feed__rows > button { min-height: 46px; grid-template-columns: 8px minmax(0, 1fr) 52px; gap: 5px; padding: 0 9px; font-size: 10px; }
+    .event-feed__rows > button:nth-child(n + 3) { display: none; }
+    .event-feed__archive { min-height: 38px; font-size: 12px; }
+    .map-activity-button { bottom: max(10px, env(safe-area-inset-bottom)); left: 10px; }
+    .maplibregl-ctrl-bottom-right { right: 6px; bottom: max(6px, env(safe-area-inset-bottom)); }
+    .map-control-dock { top: 62px; right: 10px; }
+  }
+}

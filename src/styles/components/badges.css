@@ -1,0 +1,23 @@
+@layer components {
+  .status { display: inline-flex; align-items: center; gap: 6px; color: var(--color-text-muted); font-size: 12px; white-space: nowrap; }
+  .status__dot { width: 7px; height: 7px; flex: 0 0 auto; border-radius: 50%; background: currentColor; }
+  .status--online { color: var(--color-green); }
+  .status--offline { color: var(--color-red); }
+  .status--partially_offline { color: var(--color-amber); }
+  /* 待补齐：拼图有槽位但任务尚未过审。与「部分离线」（amber）区分开，用 cyan。 */
+  .status--pending_slots { color: var(--color-cyan); }
+  .banner-badge { display: inline-flex; min-height: 18px; flex: 0 0 auto; align-items: center; padding: 0 5px; border: 1px solid currentColor; border-radius: 999px; color: var(--color-text-muted); font-family: var(--font-mono); font-size: 9px; font-weight: 500; line-height: 1; white-space: nowrap; }
+  .banner-badge--player { color: var(--color-cyan); }
+  .banner-badge--mission-day { color: var(--color-amber); }
+
+  /* portal 操作标签：只表示「有没有」，不表示次数。配色见 tokens.css 的 --objective-*。
+     一行放不下就换行（长尾组合最多 5 个操作），不要横向撑破表格列。 */
+  .objective-badges { display: flex; flex-wrap: wrap; align-items: center; gap: 3px; }
+  .banner-badge--objective-hack { color: var(--objective-hack); }
+  .banner-badge--objective-enterPassphrase { color: var(--objective-enterPassphrase); }
+  .banner-badge--objective-captureOrUpgrade { color: var(--objective-captureOrUpgrade); }
+  .banner-badge--objective-createLink { color: var(--objective-createLink); }
+  .banner-badge--objective-createField { color: var(--objective-createField); }
+  .banner-badge--objective-installMod { color: var(--objective-installMod); }
+  .banner-badge--objective-takePhoto { color: var(--objective-takePhoto); }
+}
