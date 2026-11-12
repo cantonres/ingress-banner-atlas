@@ -24,7 +24,7 @@ Banner Atlas は、[Bannergress](https://bannergress.com/) に登録されてい
 ### 開発サーバーの起動
 
 ```bash
-git clone https://github.com/Choujingress/ingress-banner-atlas.git
+git clone https://github.com/cantonres/ingress-banner-atlas.git
 cd ingress-banner-atlas
 npm ci
 npm run dev

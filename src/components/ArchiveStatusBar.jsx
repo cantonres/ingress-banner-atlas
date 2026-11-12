@@ -50,7 +50,7 @@ export function ArchiveStatusBar({ meta = null }) {
           <img src={`${import.meta.env.BASE_URL}bannergress-logo.png`} alt="" aria-hidden="true" />
           <span className="sr-only">{t("bannergressSite")}</span>
         </a>
-        <a href="https://github.com/Choujingress/ingress-banner-atlas" target="_blank" rel="noreferrer" title={t("githubRepository")}>
+        <a href="https://github.com/cantonres/ingress-banner-atlas" target="_blank" rel="noreferrer" title={t("githubRepository")}>
           <Github size={24} aria-hidden="true" />
           <span className="sr-only">{t("githubRepository")}</span>
         </a>

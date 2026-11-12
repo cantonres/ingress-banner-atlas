@@ -66,7 +66,7 @@ test("footer legal notices and external icon links are complete", () => {
   const footer = readFileSync(new URL("../src/components/ArchiveStatusBar.jsx", import.meta.url), "utf8");
   assert.match(footer, /https:\/\/ingress\.com\//);
   assert.match(footer, /https:\/\/bannergress\.com\//);
-  assert.match(footer, /https:\/\/github\.com\/Choujingress\/ingress-banner-atlas/);
+  assert.match(footer, /https:\/\/github\.com\/cantonres\/ingress-banner-atlas/);
 });
 
 test("mobile map starts unobstructed and keeps compact overlays available", () => {

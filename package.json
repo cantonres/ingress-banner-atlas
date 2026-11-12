@@ -6,7 +6,7 @@
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Choujingress/ingress-banner-atlas.git"
+    "url": "git+https://github.com/cantonres/ingress-banner-atlas.git"
   },
   "engines": {
     "node": ">=22"

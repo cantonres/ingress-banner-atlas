@@ -14,7 +14,7 @@ test("project identifiers stay consistent across manifest and lockfile", async (
   assert.equal(manifest.name, "ingress-banner-atlas");
   assert.equal(lock.name, manifest.name);
   assert.equal(lock.packages[""].name, manifest.name);
-  assert.equal(manifest.repository.url, `git+https://github.com/Choujingress/${manifest.name}.git`);
+  assert.equal(manifest.repository.url, `git+https://github.com/cantonres/${manifest.name}.git`);
 });
 
 test("Vite serves the application from the site root", () => {

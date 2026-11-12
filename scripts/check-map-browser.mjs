@@ -358,8 +358,8 @@ try {
     "https://bannergress.com/",
   );
   assert.equal(
-    await evaluate("document.querySelector('.intel-statusbar__links a[href=\"https://github.com/Choujingress/ingress-banner-atlas\"]').href"),
-    "https://github.com/Choujingress/ingress-banner-atlas",
+    await evaluate("document.querySelector('.intel-statusbar__links a[href=\"https://github.com/cantonres/ingress-banner-atlas\"]').href"),
+    "https://github.com/cantonres/ingress-banner-atlas",
   );
   assert.ok(await evaluate(
     "document.querySelector('.intel-statusbar__legal').textContent.includes('not affiliated with Niantic Inc.')",

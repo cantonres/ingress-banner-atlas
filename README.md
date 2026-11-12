@@ -24,7 +24,7 @@ Banner Atlas 把 [Bannergress](https://bannergress.com/) 上的 Ingress 拼图�
 ### 启动开发服务器
 
 ```bash
-git clone https://github.com/Choujingress/ingress-banner-atlas.git
+git clone https://github.com/cantonres/ingress-banner-atlas.git
 cd ingress-banner-atlas
 npm ci
 npm run dev

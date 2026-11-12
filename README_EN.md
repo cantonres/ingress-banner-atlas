@@ -24,7 +24,7 @@ If you want to deploy it, choose a hosting platform yourself and add whatever co
 ### Start the development server
 
 ```bash
-git clone https://github.com/Choujingress/ingress-banner-atlas.git
+git clone https://github.com/cantonres/ingress-banner-atlas.git
 cd ingress-banner-atlas
 npm ci
 npm run dev
